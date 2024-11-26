@@ -1,0 +1,64 @@
+service: python-lambda-template
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-python-requirements
+
+provider:
+  name: aws
+  runtime: python3.12
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  timeout: 30
+  environment:
+    ENV: ${opt:stage, 'development'}
+    REGION: ${aws:region}
+    ACCOUNT_ID: ${aws:accountId}
+
+  deploymentBucket:
+      name: ${self:provider.stage}-python-lambda-template-deployment-bucket
+      blockPublicAccess: true
+
+  iamRoleStatements:
+    - Action:
+      - sqs:*
+      Resource:
+        - arn:aws:sqs:${aws:region}:${aws:accountId}:mv-${self:provider.stage}-extrapolations-patterns-sender-queue
+      Effect: Allow
+
+functions:
+  cron-example:
+    handler: cron_handler.lambda_handler
+    reservedConcurrency: 1
+    events:
+      - schedule: rate(1 minutes)
+    vpc:
+      securityGroupIds:
+        - ${env:SEC_GROUP_ID}
+      subnetIds:
+        - ${env:SUBNET_ID}
+    environment:
+      DB_HOST: ${env:DB_HOST}
+      RO_DB_HOST: ${env:RO_DB_HOST}
+      DB_NAME: ${env:DB_NAME}
+      DB_USER: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/username}
+      DB_PASSWORD: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/password}
+      SQS_REGION: ${env:SQS_REGION}
+  sqs-consumer:
+    handler: sqs_consumer_handler.lambda_handler
+    events:
+      - sqs: arn:aws:sqs:${aws:region}:${aws:accountId}:${self:provider.stage}-example-queue
+    vpc:
+      securityGroupIds:
+        - ${env:SEC_GROUP_ID}
+      subnetIds:
+        - ${env:SUBNET_ID}
+    environment:
+      DB_HOST: ${env:DB_HOST}
+      RO_DB_HOST: ${env:RO_DB_HOST}
+      DB_NAME: ${env:DB_NAME}
+      DB_USER: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/username}
+      DB_PASSWORD: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/password}
+      SQS_REGION: ${env:SQS_REGION}

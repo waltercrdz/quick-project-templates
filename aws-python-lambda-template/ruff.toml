@@ -1,0 +1,32 @@
+target-version = "py312"
+fix = true
+
+lint.select = [
+    "E",  # Pycodestyle error codes (like PEP 8 violations)
+    "F",  # Pyflakes error codes (e.g., undefined variables, unused imports)
+    "B",  # Bugbear (for catching potential bugs and code quality issues)
+    "Q",  # flake8-Quotes (single- vs. double-quoted strings consistency)
+    "A",  # flake8-annotations (type annotation enforcement)
+]
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+]
+
+line-length = 88
+lint.ignore = [
+    "E203",  # Whitespace before ':', conflicts with Black's formatting
+    #"E501",  # Line length (usually handled by a formatter like Black)
+    "B008",  # Ignore B008 error
+]
+
+lint.fixable = [
+    "Q",    # Auto-fix quotes
+    "F401", # Remove unused imports
+    "E",    # Formatting and style errors
+]

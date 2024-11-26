@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  company_domain_performance:
+    build: .
+    command: [ "python", "-u", "company_domain_performance.py" ]
+    env_file:
+      - dev/.env
+    volumes:
+      - ~/.aws/:/root/.aws:ro
+    restart: "no"

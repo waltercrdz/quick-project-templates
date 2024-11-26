@@ -1,0 +1,57 @@
+image: atlassian/default-image:4
+
+pipelines:
+  default:
+      - step:
+          name: "Running tests"
+          script:
+            - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            - python3.10 get-pip.py
+            - python3.10 -m pip install -r requirements.txt
+            - pytest
+  branches:
+    staging:
+      - step:
+          deployment: pre-production
+          name: "Deploy to staging"
+          oidc: true
+          caches:
+            - node
+          script:
+            - export ENVIRONMENT="staging"
+            - export ENVIRONMENT_OLD_NAMING="stage"
+            - export AWS_ROLE_ARN=arn:aws:iam::296667985367:role/openid-bitbucket-pipelines-connectist
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - export AWS_REGION=us-west-2
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token          
+            - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            - python3.10 get-pip.py
+            - npm install
+            - npm install -g serverless@3.29.0
+            - serverless plugin install -n serverless-deployment-bucket
+            - serverless plugin install -n serverless-python-requirements
+            - serverless requirements clean
+            - serverless deploy --stage staging --region $AWS_REGION
+    master:
+      - step:
+          deployment: production
+          name: "Deploy to production"
+          oidc: true
+          caches:
+            - node
+            - pip
+          script:
+            - export ENVIRONMENT="production"
+            - export ENVIRONMENT_OLD_NAMING="prod"
+            - export AWS_ROLE_ARN=arn:aws:iam::969567797856:role/openid-bitbucket-pipelines-connectist
+            - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+            - export AWS_REGION=us-west-2
+            - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token          
+            - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            - python3.10 get-pip.py
+            - npm install
+            - npm install -g serverless@3.29.0
+            - serverless plugin install -n serverless-deployment-bucket
+            - serverless plugin install -n serverless-python-requirements
+            - serverless requirements clean
+            - serverless deploy --stage production --region $AWS_REGION
