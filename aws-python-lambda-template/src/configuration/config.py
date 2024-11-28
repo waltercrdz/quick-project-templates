@@ -1,19 +1,19 @@
 import logging
 import os
 from typing import Generator
+from mysql.connector.pooling import MySQLConnectionPool
+from mysql.connector.pooling import PooledMySQLConnection
 
-from psycopg2.pool import SimpleConnectionPool
-from psycopg2.extensions import connection
 from contextlib import contextmanager
 
 from src.persistence.product_repository import ProductRepository
 from src.application.add_product import AddProduct
 
 # DB
-DB_HOST: str = os.environ.get("DB_HOST")
-DB_USER: str = os.environ.get("DB_USER")
-DB_PASSWORD: str = os.environ.get("DB_PASSWORD")
-DB_NAME: str = os.environ.get("DB_NAME")
+DB_HOST: str | None = os.environ.get("DB_HOST")
+DB_USER: str | None = os.environ.get("DB_USER")
+DB_PASSWORD: str | None = os.environ.get("DB_PASSWORD")
+DB_NAME: str | None = os.environ.get("DB_NAME")
 
 # Logging configuration
 root = logging.getLogger()
@@ -23,27 +23,24 @@ if root.handlers:
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
-    level=logging.INFO
-)
-
-# Global variables
-_ADD_PRODUCT_UC: AddProduct | None = None
+    level=logging.INFO)
 
 # Initialize the connection pool
-_CONNECTION_POOL: SimpleConnectionPool = SimpleConnectionPool(
-    minconn=1,
-    maxconn=10,
+_CONNECTION_POOL: MySQLConnectionPool = MySQLConnectionPool(
+    pool_name="product_pool",
+    pool_size=10,
+    pool_reset_session=True,
+    host=DB_HOST,
     user=DB_USER,
     password=DB_PASSWORD,
-    host=DB_HOST,
     database=DB_NAME
 )
 
-def get_connection() -> connection:
-    return _CONNECTION_POOL.getconn()
+def get_connection() -> PooledMySQLConnection:
+    return _CONNECTION_POOL.get_connection()
 
-def release_connection(connection: connection) -> None:
-    _CONNECTION_POOL.putconn(connection)
+def release_connection(connection: PooledMySQLConnection) -> None:
+    connection.close()
 
 @contextmanager
 def create_add_product() -> Generator[AddProduct, None, None]:
@@ -51,7 +48,7 @@ def create_add_product() -> Generator[AddProduct, None, None]:
     Context manager to create AddProduct with proper connection management.
     Ensures the connection is released after use.
     """
-    connection = get_connection()
+    connection:PooledMySQLConnection = get_connection()
     try:
         repository = ProductRepository(connection=connection)
         yield AddProduct(repository=repository)

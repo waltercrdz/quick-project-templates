@@ -1,6 +1,6 @@
 # Quick Project Templates
 
-A collection of quick-start project templates for various programming languages and frameworks.
+A collection of quick-start project templates for Java, Python and other programming languages and frameworks.
 
 ## Features
 
@@ -8,45 +8,22 @@ A collection of quick-start project templates for various programming languages 
 - Consistent project structure
 - Easy setup and configuration
 
-## Project Structure
-
-* `python/`: Directory containing Python project templates.
-* `nodejs/`: Directory containing Node.js project templates.
-* `java/`: Directory containing Java project templates.
-* `README.md`: This file.
-
 ## Installation
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/waltercrdz/quick-project-templates.git
-    cd quick-project-templates
-    ```
+Clone the repository:
 
-2. Navigate to the desired project template directory:
-    ```bash
-    cd python/flask-template
-    ```
+```bash
+git clone https://github.com/waltercrdz/quick-project-templates.git
+cd quick-project-templates
+```
 
-3. Follow the specific instructions in the template's README file to set up and run the project.
+Navigate to the desired project template directory:
 
-## Using Docker Compose
+```bash
+cd aws-python-lambda-template
+```
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/waltercrdz/quick-project-templates.git
-    cd quick-project-templates
-    ```
-
-2. Navigate to the desired project template directory:
-    ```bash
-    cd nodejs/express-template
-    ```
-
-3. Run the application using Docker Compose:
-    ```bash
-    docker-compose up --build
-    ```
+Follow the specific instructions in the template's README file to set up and run the project.
 
 ## Contributing
 

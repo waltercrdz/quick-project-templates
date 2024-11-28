@@ -1,6 +1,6 @@
 service: python-lambda-template
 
-frameworkVersion: '3'
+frameworkVersion: '4'
 
 plugins:
   - serverless-deployment-bucket
@@ -25,40 +25,43 @@ provider:
     - Action:
       - sqs:*
       Resource:
-        - arn:aws:sqs:${aws:region}:${aws:accountId}:mv-${self:provider.stage}-extrapolations-patterns-sender-queue
+        - arn:aws:sqs:${aws:region}:${aws:accountId}:${self:provider.stage}-product-created-queue
       Effect: Allow
 
+custom:
+  pythonRequirements:
+    usePoetry: true
+    slim: true
+    strip: false
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - .venv/**
+    - tests/**
+    - docs/**
+    - .git/**
+    - .github/**
+    - .vscode/**
+    - .pytest_cache/**
+    - .mypy_cache/**
+    - .ruff_cache/**
+
 functions:
-  cron-example:
-    handler: cron_handler.lambda_handler
-    reservedConcurrency: 1
-    events:
-      - schedule: rate(1 minutes)
-    vpc:
-      securityGroupIds:
-        - ${env:SEC_GROUP_ID}
-      subnetIds:
-        - ${env:SUBNET_ID}
-    environment:
-      DB_HOST: ${env:DB_HOST}
-      RO_DB_HOST: ${env:RO_DB_HOST}
-      DB_NAME: ${env:DB_NAME}
-      DB_USER: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/username}
-      DB_PASSWORD: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/password}
-      SQS_REGION: ${env:SQS_REGION}
   sqs-consumer:
-    handler: sqs_consumer_handler.lambda_handler
+    handler: src/handler/sqs_consumer_handler.lambda_handler
     events:
-      - sqs: arn:aws:sqs:${aws:region}:${aws:accountId}:${self:provider.stage}-example-queue
+      - sqs: arn:aws:sqs:${aws:region}:${aws:accountId}:${self:provider.stage}-product-created-queue
     vpc:
       securityGroupIds:
         - ${env:SEC_GROUP_ID}
       subnetIds:
-        - ${env:SUBNET_ID}
+        - ${env:SUBNET_ID1}
+        - ${env:SUBNET_ID2}
     environment:
       DB_HOST: ${env:DB_HOST}
-      RO_DB_HOST: ${env:RO_DB_HOST}
       DB_NAME: ${env:DB_NAME}
-      DB_USER: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/username}
-      DB_PASSWORD: ${ssm:/mail-validation/${env:ENVIRONMENT}/backlog-processor/database/password}
+      DB_USER: ${env:DB_USER}
+      DB_PASSWORD: ${env:DB_PASSWORD}
       SQS_REGION: ${env:SQS_REGION}

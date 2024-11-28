@@ -21,12 +21,12 @@ def lambda_handler(event: Dict[str, Any], _: Any) -> Dict[str, Any]:
             "statusCode": 200, 
             "body": "Products processed successfully"
         }
-    except Exception:
+    except Exception as e:
         logger.error(
             f"There was an error while the batch processing:\n"
             f"{str(traceback.format_exc())}"
         )
         return {
             "statusCode": 500, 
-            "body": "There was an error while processing the products"
+            "body": f"There was an error while processing the products: {str(e)}"
         }

@@ -1,5 +1,5 @@
 PRODUCT_INSERT: str = """
-            INSERT INTO products
+            INSERT INTO products.products
             (
                 id,
                 name,
