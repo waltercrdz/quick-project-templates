@@ -10,12 +10,10 @@ class DomainException(Exception):
     def __init__(
             self,
             code: ErrorCode,
-            message: str = "An unexpected error has ocurred!",
-            source: Exception | None = None
+            message: str = "An unexpected error has ocurred!"
     ):
         self.code = code
         self.message = message
-        self.source = source
         super().__init__(self.message)
 
 class InvalidInputException(DomainException):
@@ -30,14 +28,12 @@ class DatabaseExecutionException(DomainException):
     def __init__(
             self,
             code: ErrorCode = ErrorCode.DATABASE_EXECUTION,
-            message: str = "There was an error trying to execute a database operation",
-            source: Exception | None = None):
-        super().__init__(code, message, source)
+            message: str = "There was an error trying to execute a database operation"):
+        super().__init__(code, message)
 
 class ProductAlreadyExistsException(DomainException):
     def __init__(
             self,
             code: ErrorCode = ErrorCode.PRODUCT_ALREADY_EXISTS,
-            message: str = "The product already exists in the database",
-            source: Exception | None = None):
-        super().__init__(code, message, source)
+            message: str = "The product already exists in the database"):
+        super().__init__(code, message)
