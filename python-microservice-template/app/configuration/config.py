@@ -1,15 +1,21 @@
 import logging
 import os
+from typing import AsyncGenerator, Generator
+from fastapi import FastAPI
+from mysql.connector.pooling import MySQLConnectionPool
+from mysql.connector.pooling import PooledMySQLConnection
 
-from app.application.authenticate_user import AuthenticateUser
-from app.application.register_user import RegisterUser
-from app.application.find_user_by_id import FindUserById
-from app.infrastructure.repository.user_command_repository import UserRepository
-from app.configuration.database import SessionLocal, engine
-from app.infrastructure.orm.entities_orm import Base
+from app.application.add_product import AddProduct
+from app.application.find_product_by_id import FindProductById
+from app.infrastructure.repository.product_repository import ProductRepository
 
-# Environment variables
-DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+from contextlib import asynccontextmanager, contextmanager
+
+# DB
+DB_HOST: str | None = os.environ.get("DB_HOST")
+DB_USER: str | None = os.environ.get("DB_USER")
+DB_PASSWORD: str | None = os.environ.get("DB_PASSWORD")
+DB_NAME: str | None = os.environ.get("DB_NAME")
 
 # Logging configuration
 root = logging.getLogger()
@@ -19,26 +25,31 @@ if root.handlers:
 logging.basicConfig(
     format="%(levelname)s - %(asctime)s - %(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S",
-    level=logging.INFO,
-)
+    level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
+_CONNECTION_POOL: MySQLConnectionPool
 
-# Dependency Injection
-def get_register_user() -> RegisterUser:
-    session = SessionLocal()
-    user_repository: UserRepository = UserRepository(session)
-    return RegisterUser(user_repository)
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    logger.info("Initializing the database connection pool...")
+    global _CONNECTION_POOL
+    _CONNECTION_POOL = MySQLConnectionPool(
+        pool_name="product_pool",
+        pool_size=10,
+        pool_reset_session=True,
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        database=DB_NAME
+    )
+    yield
 
+def get_add_product() -> AddProduct:
+    repository: ProductRepository = ProductRepository(connection_pool=_CONNECTION_POOL)
+    return AddProduct(repository=repository)
 
-def get_user_finder() -> FindUserById:
-    session = SessionLocal()
-    user_repository: UserRepository = UserRepository(session)
-    return FindUserById(user_repository)
-
-
-def get_authenticate_user() -> AuthenticateUser:
-    session = SessionLocal()
-    user_repository: UserRepository = UserRepository(session)
-    return AuthenticateUser(user_repository)
+def get_find_product_by_id() -> FindProductById:
+    repository = ProductRepository(connection_pool=_CONNECTION_POOL)
+    return FindProductById(repository=repository)

@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from app.application.find_user_by_id import FindUserById
 from app.domain.entities import User
 from app.domain.exceptions import UserNotFound
-from app.infrastructure.repository.user_command_repository import UserRepository
+from app.infrastructure.repository.user_command_repository import ProductRepository
 
 USER_ID: str = "1234"
 USER_EMAIL: str = "test@example.com"
@@ -11,7 +11,7 @@ PASSWORD: str = "password"
 
 @pytest.fixture
 def user_repository() -> Mock:
-    return Mock(spec=UserRepository)
+    return Mock(spec=ProductRepository)
 
 @pytest.fixture
 def find_user_by_id(user_repository: Mock) -> FindUserById:

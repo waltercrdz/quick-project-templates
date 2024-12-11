@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from app.application.register_user import RegisterUser
 from app.domain.entities import RegistrationRequest, User
 from app.domain.exceptions import UserAlreadyExists
-from app.infrastructure.repository.user_command_repository import UserRepository
+from app.infrastructure.repository.user_command_repository import ProductRepository
 from app.utils.hashing import hash_password
 
 USER_EMAIL: str = "test@example.com"
@@ -12,7 +12,7 @@ HASHED_PASSWORD: str = hash_password(PASSWORD)
 
 @pytest.fixture
 def user_repository() -> Mock:
-    return Mock(spec=UserRepository)
+    return Mock(spec=ProductRepository)
 
 @pytest.fixture
 def register_user(user_repository: Mock) -> RegisterUser:

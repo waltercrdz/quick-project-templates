@@ -8,10 +8,10 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.13"
-SQLAlchemy = "^2.0.36"
-psycopg2-binary = "^2.9.10"
 fastapi = "^0.115.4"
 uvicorn = "^0.32.0"
+pydantic = "^2.10.3"
+mysql-connector-python = "^9.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
