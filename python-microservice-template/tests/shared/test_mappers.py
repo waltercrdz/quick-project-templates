@@ -6,7 +6,10 @@ import tests.utils.object_mother as object_mother
 def test_map_to_product() -> None:
     product_creation_request = ProductCreationRequestObjectMother.create()
 
-    product: Product = map_to_product(product_creation_request, object_mother.PRODUCT_ID)
+    product_creation_request = ProductCreationRequestObjectMother.create()
+    product: Product = map_to_product(
+        product_creation_request, object_mother.PRODUCT_ID
+    )
 
     assert product.id == object_mother.PRODUCT_ID
     assert product.name == object_mother.PRODUCT_NAME

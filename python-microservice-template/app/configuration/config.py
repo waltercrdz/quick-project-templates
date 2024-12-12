@@ -1,15 +1,14 @@
 import logging
 import os
-from typing import AsyncGenerator, Generator
+from typing import AsyncGenerator
 from fastapi import FastAPI
 from mysql.connector.pooling import MySQLConnectionPool
-from mysql.connector.pooling import PooledMySQLConnection
 
 from app.application.add_product import AddProduct
 from app.application.find_product_by_id import FindProductById
-from app.infrastructure.repository.product_repository import ProductRepository
+from app.infrastructure.persistence.product_repository import ProductRepository
 
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import asynccontextmanager
 
 # DB
 DB_HOST: str | None = os.environ.get("DB_HOST")

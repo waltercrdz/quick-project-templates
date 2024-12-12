@@ -1,6 +1,6 @@
 from uuid import UUID
 from app.domain.exceptions import ProductNotFoundException
-from app.infrastructure.repository.product_repository import ProductRepository
+from app.infrastructure.persistence.product_repository import ProductRepository
 from app.domain.product import Product
 
 

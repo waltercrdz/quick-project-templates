@@ -1,6 +1,6 @@
 import logging
 from app.domain.product import Product
-from app.infrastructure.repository.product_repository import ProductRepository
+from app.infrastructure.persistence.product_repository import ProductRepository
 
 logger = logging.getLogger(__name__)
 

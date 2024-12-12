@@ -1,6 +1,9 @@
 from fastapi import FastAPI
-from pydantic import ValidationError
-from app.domain.exceptions import DatabaseExecutionException, ProductAlreadyExistsException, ProductNotFoundException
+from app.domain.exceptions import (
+    DatabaseExecutionException,
+    ProductAlreadyExistsException,
+    ProductNotFoundException
+)
 from app.infrastructure.routers import products
 from app.configuration.config import lifespan
 from app.infrastructure.routers.exception_handlers import (

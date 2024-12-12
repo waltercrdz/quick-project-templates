@@ -1,7 +1,7 @@
 import logging
 from uuid import UUID
 
-from app.infrastructure.repository.queries import PRODUCT_INSERT, PRODUCT_SELECT_BY_ID
+from app.infrastructure.persistence.queries import PRODUCT_INSERT, PRODUCT_SELECT_BY_ID
 from app.domain.product import Product
 from app.domain.exceptions import (
     DatabaseExecutionException,
