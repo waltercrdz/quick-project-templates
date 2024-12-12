@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "python-microservice-template"
+version = "0.1.0"
+description = ""
+authors = ["Walter Cardozo <waltercrdz@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "^0.115.4"
+uvicorn = "^0.32.0"
+pydantic = "^2.10.3"
+mysql-connector-python = "^9.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+coverage = "^7.6.4"
+mypy = "^1.13.0"
+ruff = "^0.7.2"
+alembic = "^1.14.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py313"
+fix = true
+
+lint.select = [
+    "E",  # Pycodestyle error codes (like PEP 8 violations)
+    "F",  # Pyflakes error codes (e.g., undefined variables, unused imports)
+    "B",  # Bugbear (for catching potential bugs and code quality issues)
+    "Q",  # flake8-Quotes (single- vs. double-quoted strings consistency)
+    "A",  # flake8-annotations (type annotation enforcement)
+]
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+]
+
+line-length = 88
+lint.ignore = [
+    "E203",  # Whitespace before ':', conflicts with Black's formatting
+    #"E501",  # Line length (usually handled by a formatter like Black)
+    "B008",  # Ignore B008 error
+]
+
+lint.fixable = [
+    "Q",    # Auto-fix quotes
+    "F401", # Remove unused imports
+    "E",    # Formatting and style errors
+]
+
+[tool.mypy]
+files = "app"
+strict = true
+python_version = "3.13"
+disallow_untyped_defs = true
+ignore_missing_imports = false
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = false
