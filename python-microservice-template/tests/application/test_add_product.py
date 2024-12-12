@@ -4,7 +4,7 @@ from tests.utils.object_mother import ProductObjectMother
 from app.domain.product import Product
 from app.domain.exceptions import DatabaseExecutionException
 from app.application.add_product import AddProduct
-from app.infrastructure.repository.product_repository import ProductRepository
+from app.infrastructure.persistence.product_repository import ProductRepository
 
 @pytest.fixture
 def repository() -> Mock:

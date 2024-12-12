@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from app.application.find_product_by_id import FindProductById
 from app.domain.product import Product
 from app.domain.exceptions import ProductNotFoundException
-from app.infrastructure.repository.product_repository import ProductRepository
+from app.infrastructure.persistence.product_repository import ProductRepository
 from tests.utils.object_mother import PRODUCT_ID, ProductObjectMother
 
 @pytest.fixture

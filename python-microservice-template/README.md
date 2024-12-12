@@ -11,10 +11,9 @@ This is a template for building Python microservices using FastAPI. It includes 
 
 * `pyproject.toml`: Standard configuration file for Python projects, used by various tools including Poetry, Ruff, isort, and more.
 * `app/main.py`: Entry point of the project that starts the application.
-* `app/infrastructure/routers/products.py`: Contains the API endpoints for product-related operations.
-* `app/domain/product.py`: Defines the Product domain model.
-* `app/application/add_product.py`: Contains the business logic for adding products.
-* `app/application/find_product_by_id.py`: Contains the business logic for finding products by ID.
+* `app/infrastructure`: Contains the implementation details and adapters for external systems, such as database repositories and API routers.
+* `app/domain`: Contains the core business logic and domain models. This layer is independent of external systems and frameworks.
+* `app/application`: Contains the application services and use cases that orchestrate the business logic. This layer interacts with the domain layer and the infrastructure layer.
 * `app/shared/mappers.py`: Contains utility functions for mapping data.
 * `tests/`: Directory containing test cases for the project.
 
@@ -22,7 +21,7 @@ This is a template for building Python microservices using FastAPI. It includes 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/waltercrdz/python-microservice-template.git
+    git clone https://github.com/waltercrdz/quick-project-templates.git
     cd python-microservice-template
     ```
 
@@ -33,15 +32,10 @@ This is a template for building Python microservices using FastAPI. It includes 
 
 3. Create a `.env` file in the `etc` directory with the following content:
     ```env
-    DB_HOST=db
-    DB_USER=products
-    DB_PASSWORD=password123
+    DB_HOST=YOUR_DB_HOST
+    DB_USER=YOUR_DB_USER
+    DB_PASSWORD=YOUR_DB_PASSWORD
     DB_NAME=products
-    ```
-
-4. Run the FastAPI server:
-    ```bash
-    poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
 ## Running with Docker
@@ -60,111 +54,50 @@ This is a template for building Python microservices using FastAPI. It includes 
     poetry run pytest
     ```
 
-## Usage
-
-### Product Endpoints
-
-- **Create Product**: `POST /products/`
-    - Request Body:
-        ```json
-        {
-            "name": "Product Name",
-            "description": "Product Description",
-            "price": 12.20,
-            "stock": 100
-        }
-        ```
-    - Response:
-        ```json
-        {
-            "id": "UUID",
-            "name": "Product Name",
-            "description": "Product Description",
-            "price": 12.20,
-            "stock": 100
-        }
-        ```
-
-- **Get Product by ID**: `GET /products/{product_id}`
-    - Response:
-        ```json
-        {
-            "id": "UUID",
-            "name": "Product Name",
-            "description": "Product Description",
-            "price": 12.20,
-            "stock": 100
-        }
-        ```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License.
-
 ## API Endpoints
 
-### User Registration
+### Product Creation
 
-- **Endpoint:** `/users`
+- **Endpoint:** `/products`
 - **Method:** `POST`
-- **Description:** Register a new user.
+- **Description:** Creates a new Product.
 - **Request Body:**
-    - `email` (string): The email of the user.
-    - `password` (string): The password of the user.
+    - `name` (string): The name of the product.
+    - `description` (string): The description of the product.
+    - `price` (float): The price of the product.
+    - `quantity` (int): The quantity of the product in stock.
 - **Responses:**
-    - `201 Created`: Successfully registered the user.
-        - Body: A JSON object representing the user.
+    - `201 Created`: Successfully created the Product.
+        - Body: A JSON object representing the Product.
     - `400 Bad Request`: Invalid input data.
     - `500 Internal Server Error`: An error occurred on the server.
 - **Curl Command:**
     ```bash
-    curl -X POST "http://127.0.0.1:8000/register" -H "Content-Type: application/json" -d '{"email": "walterio@gmail.com", "password": "newpassword123"}'
+    curl -X POST "http://127.0.0.1:8000/products" -H "Content-Type: application/json" -d '{"name": "Sample Product", "description": "This is a sample product", "price": 19.99, "quantity": 100}'
     ```
 
-### Get a User by Id
+### Get a Product by Id
 
-- **Endpoint:** `/users/{id}`
+- **Endpoint:** `/products/{uuid}`
 - **Method:** `GET`
-- **Description:** Retrieves a user by their unique identifier.
+- **Description:** Retrieves a Product by their unique identifier.
 - **Path Parameters:**
-    - `id` (string): The unique identifier of the user.
+    - `id` (UUID): The unique identifier of the Product.
 - **Responses:**
-    - `200 OK`: Successfully retrieved the user.
-        - Body: A JSON object representing the user.
-    - `404 Not Found`: No user found with the specified id.
+    - `200 OK`: Successfully retrieved the Product.
+        - Body: A JSON object representing the Product.
+    - `404 Not Found`: No Product found with the specified id.
     - `500 Internal Server Error`: An error occurred on the server.
 - **Curl Command:**
     ```bash
-    curl -X GET "http://127.0.0.1:8000/users/{id}" -H "accept: application/json"
-    ```
-
-### User Authentication
-
-- **Endpoint:** `/auth`
-- **Method:** `POST`
-- **Description:** Authenticate a user and returns a JWT token.
-- **Request Body:**
-    - `email` (string): The email of the user.
-    - `password` (string): The password of the user.
-- **Responses:**
-    - `200 OK`: Successfully authenticated the user.
-        - Body: A JSON object containing the JWT token.
-    - `401 Unauthorized`: Invalid credentials.
-    - `500 Internal Server Error`: An error occurred on the server.
-- **Curl Command:**
-    ```bash
-    curl -X POST "http://127.0.0.1:8000/auth" -H "Content-Type: application/json" -d '{"email": "walterio@gmail.com", "password": "newpassword123"}'
+    curl -X GET "http://127.0.0.1:8000/products/{uuid}" -H "accept: application/json"
     ```
 
 For more details, please refer to the OpenAPI documentation, hosted at `http://127.0.0.1:8000/docs`
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
 
