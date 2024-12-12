@@ -12,6 +12,11 @@ services:
       - "3306:3306"
     volumes:
       - ./etc/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   products-api:
     build: .
@@ -24,4 +29,5 @@ services:
       - ~/.aws/:/root/.aws:ro
     restart: "no"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
