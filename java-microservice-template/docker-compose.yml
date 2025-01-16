@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  products:
+    build: .
+    container_name: products
+    ports:
+      - "8080:8080"
+    env_file:
+      - etc/.env
+    volumes:
+      - ~/.aws/:/root/.aws:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U test" ]
+      interval: 5s
+      timeout: 4s
+      retries: 5
