@@ -22,6 +22,8 @@ services:
       POSTGRES_DB: test
     ports:
       - "5432:5432"
+    volumes:
+      - ./etc/database:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U test" ]
       interval: 5s

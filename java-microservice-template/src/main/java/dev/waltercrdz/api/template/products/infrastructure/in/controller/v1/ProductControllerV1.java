@@ -20,7 +20,7 @@ import dev.waltercrdz.api.template.products.infrastructure.in.mapper.ProductMapp
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/v1/products")
 public class ProductControllerV1 {
 
     private final ProductFinder finder;

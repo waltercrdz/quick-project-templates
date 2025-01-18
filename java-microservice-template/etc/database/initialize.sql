@@ -1,6 +1,6 @@
-CREATE SCHEMA orders;
+CREATE SCHEMA products;
 
-CREATE TABLE IF NOT EXISTS orders.products (
+CREATE TABLE IF NOT EXISTS products.products (
     id          UUID PRIMARY KEY,
     name        TEXT           NOT NULL,
     description TEXT           NOT NULL,
