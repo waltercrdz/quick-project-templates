@@ -30,7 +30,7 @@ provider:
 
 custom:
   pythonRequirements:
-    usePoetry: true
+    usePoetry: false
     slim: true
     strip: false
 

@@ -1,13 +1,12 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
-RUN pip install poetry
-ENV POETRY_VIRTUALENVS_CREATE=false
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-COPY pyproject.toml poetry.lock* /app/
+COPY pyproject.toml uv.lock /app/
 
-RUN poetry install --no-root
+RUN uv sync --frozen --no-dev --system
 
 COPY . /app
 
