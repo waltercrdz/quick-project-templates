@@ -1,0 +1,51 @@
+server:
+  servlet:
+    context-path: /api
+  port: 8080
+
+spring:
+  application:
+    name: products
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      leak-detection-threshold: 2000
+      pool-name: HikariPool
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.default_schema: ${DB_SCHEMA}
+
+error:
+  codes:
+    ILLEGAL_ARGUMENT: 400
+    NOT_FOUND: 404
+    NOT_ENOUGH_STOCK: 409
+    PRODUCT_NOT_FOUND: 404
+    DATABASE_CONNECTION_ERROR: 503
+    CONFLICT: 409
+    INTERNAL_SERVER_ERROR: 500
+    IllegalArgumentException: 400
+    MethodArgumentNotValidException: 400
+    MethodArgumentTypeMismatchException: 400
+    NoHandlerFoundException: 404
+
+logging:
+  level:
+    root: INFO
+    dev.waltercrdz.api: INFO
